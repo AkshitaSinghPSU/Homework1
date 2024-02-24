@@ -42,26 +42,28 @@ public:
     // Member function to operate the plane
     void operate(double dt)
     {
-        if (pos < distance)
-        {
-            pos += vel * dt;
-            if (pos < 0) pos = 0;
-            at_SCE = false;
-        }
+        switch (pos >= distance) {
+            case false:
+                pos += vel * dt;
+                if (pos < 0) pos = 0;
+                at_SCE = false;
+                break;
 
-        else if (destination == "SCE")
-        {
-            at_SCE = true;
-            swap(origin, destination);
-            pos = 0.0;
-            distance = flightDistances[origin][destination];
-        }
-
-        else
-        {
-            swap(origin, destination);
-            pos = 0.0;
-            distance = flightDistances[origin][destination];
+            case true:
+                if (destination == "SCE")
+                {
+                    at_SCE = true;
+                    swap(origin, destination);
+                    pos = 0.0;
+                    distance = flightDistances[origin][destination];
+                }
+                else
+                {
+                    swap(origin, destination);
+                    pos = 0.0;
+                    distance = flightDistances[origin][destination];
+                }
+                break;
         }
     }
 
@@ -137,10 +139,12 @@ int main()
     double timestep = 75.0;
 
     int maxIterations = 1200;
+    int i = 0;
 
-    for (int i = 0; i < maxIterations; ++i) {
+    while (i < maxIterations) {
         myPlane.operate(timestep);
-        cout << "Time " << 75 * (i + 1) << ", Position: " << myPlane.getPos() << " miles" << endl;
+        cout << "Time " << timestep * (i + 1) << ", Position: " << myPlane.getPos() << " miles" << endl;
+        i++;
     }
 
     return 0;
